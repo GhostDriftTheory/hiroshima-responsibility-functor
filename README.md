@@ -1,5 +1,7 @@
 # Hiroshima Responsibility Functor
 
+![Lean CI](https://github.com/GhostDriftTheory/hiroshima-responsibility-functor/actions/workflows/lean.yml/badge.svg)
+
 This bundle contains a category-theoretic and Lean-formalized sketch of the
 Hiroshima Responsibility Functor.
 
