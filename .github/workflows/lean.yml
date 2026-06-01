@@ -1,11 +1,9 @@
 name: Lean CI
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-
 jobs:
   verify:
     name: Verify Lean proofs
@@ -23,6 +21,15 @@ jobs:
         run: |
           elan toolchain install $(cat lean-toolchain)
           elan override set $(cat lean-toolchain)
+
+      - name: Cache Lake packages      
+        uses: actions/cache@v4
+        with:
+          path: ~/.elan/toolchains
+          key: ${{ runner.os }}-elan-${{ hashFiles('lean-toolchain') }}
+
+      - name: Resolve dependencies    
+        run: lake update
 
       - name: Verify HiroshimaResponsibility.lean
         run: lake env lean HiroshimaResponsibility.lean
