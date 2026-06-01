@@ -2,7 +2,7 @@
 
 ![Lean CI](https://github.com/GhostDriftTheory/hiroshima-responsibility-functor/actions/workflows/lean.yml/badge.svg)
 
-![Hiroshima Responsibility Functor](./hiroshima responsibility functor.png)
+![Hiroshima Responsibility Functor](./Hiroshima%20Responsibility%20Functor.png)
 
 **Hiroshima Responsibility Functor** formalizes how ordinary corporate decision-making can be mapped into a responsibility-preserving path that passes through Beacon admissibility and ADIC-style verification.
 
