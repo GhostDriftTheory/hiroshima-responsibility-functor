@@ -481,6 +481,133 @@ theorem bypassVerification_not_admissible :
                       | tail _ h => cases h
 
 /-!
+## Civilizational Threat Structure
+
+Defines the structural properties shared by nuclear weapons and AI.  This makes
+the "same layer" claim precise and formally checkable.
+
+This section does not claim that these technologies are morally equivalent, or
+that AI harm is inevitable.  It claims they share a structural pattern: the
+capacity to convert humans into calculation objects, to generate irreversible
+civilizational-scale consequences, and to do so through chains of decisions
+that can bypass responsibility conditions.
+-/
+
+structure CivilizationalThreat where
+  -- The technology can convert humans into objects of optimization.
+  convertsHumansToObjects : Bool
+  -- The technology can generate irreversible civilizational-scale harm.
+  irreversibleAtCivilizationalScale : Bool
+  -- The technology can be deployed through decision chains that bypass
+  -- responsibility conditions (Beacon / Verification).
+  bypassesResponsibilityConditions : Bool
+  deriving DecidableEq, Repr
+
+-- Nuclear weapons exhibit all three structural properties.
+-- Historical referent: Hiroshima and Nagasaki, August 1945.
+def nuclear_civilizational_threat : CivilizationalThreat :=
+  { convertsHumansToObjects := true
+    irreversibleAtCivilizationalScale := true
+    bypassesResponsibilityConditions := true }
+
+-- Advanced AI systems exhibit the same three structural risk properties in
+-- the governance model used here.  Referent: the Hiroshima AI Process (G7
+-- 2023), international AI safety evaluations, and the documented governance
+-- concern that optimization systems can exclude human dignity, exceptional
+-- cases, and future generations from their target domain.
+def ai_civilizational_threat : CivilizationalThreat :=
+  { convertsHumansToObjects := true
+    irreversibleAtCivilizationalScale := true
+    bypassesResponsibilityConditions := true }
+
+-- Nuclear weapons and AI share the same civilizational threat structure.
+-- This is the formal content of the claim that they are "in the same layer."
+theorem nuclear_ai_same_civilizational_structure :
+    nuclear_civilizational_threat = ai_civilizational_threat := by
+  rfl
+
+/-!
+## Conditioned Uniqueness of Hiroshima
+
+Proves that Hiroshima is the only city satisfying both:
+
+1. It received an intentional nuclear attack, not an accident.
+2. It holds an internationally recognized AI governance anchor.
+
+This does not prove that AI governance requires Hiroshima, nor that Hiroshima's
+role is necessary for world adoption.  Those would be normative claims outside
+formal proof.  The theorem below proves only a conditioned uniqueness statement
+from explicit historical premises.
+-/
+
+-- A city type. `Other` represents all cities other than Hiroshima and
+-- Nagasaki for the purpose of the exhaustiveness axiom below.
+inductive City where
+  | Hiroshima : City
+  | Nagasaki : City
+  | Other : City
+  deriving DecidableEq, Repr
+
+-- Predicate: the city received an intentional nuclear attack, not an accident.
+axiom IntentionalNuclearAttack : City -> Prop
+
+-- Predicate: the city holds an internationally recognized AI governance
+-- anchor.
+axiom AIGovernanceAnchor : City -> Prop
+
+-- Hiroshima received an intentional nuclear attack.
+-- Historical referent: August 6, 1945.
+axiom nuclear_hiroshima : IntentionalNuclearAttack City.Hiroshima
+
+-- Nagasaki received an intentional nuclear attack.
+-- Historical referent: August 9, 1945.
+axiom nuclear_nagasaki : IntentionalNuclearAttack City.Nagasaki
+
+-- Hiroshima holds an AI governance anchor.
+-- Historical referent: G7 Hiroshima AI Process (2023).
+axiom anchor_hiroshima : AIGovernanceAnchor City.Hiroshima
+
+-- Nagasaki does not hold an equivalent internationally recognized AI
+-- governance anchor in this formal model.
+axiom no_anchor_nagasaki : Not (AIGovernanceAnchor City.Nagasaki)
+
+-- Exhaustiveness: intentional nuclear attacks occurred only at Hiroshima and
+-- Nagasaki.  All other cities are excluded from this condition.
+axiom nuclear_cities_exhaustive :
+    forall x : City, IntentionalNuclearAttack x ->
+      x = City.Hiroshima \/ x = City.Nagasaki
+
+-- Hiroshima satisfies both conditions in this model.
+theorem hiroshima_satisfies_conditioned_role :
+    IntentionalNuclearAttack City.Hiroshima /\
+    AIGovernanceAnchor City.Hiroshima := by
+  exact And.intro nuclear_hiroshima anchor_hiroshima
+
+-- Nagasaki satisfies the nuclear condition but not the AI-governance-anchor
+-- condition in this model.
+theorem nagasaki_has_nuclear_but_no_anchor :
+    IntentionalNuclearAttack City.Nagasaki /\
+    Not (AIGovernanceAnchor City.Nagasaki) := by
+  exact And.intro nuclear_nagasaki no_anchor_nagasaki
+
+-- Conditioned uniqueness of Hiroshima.
+-- Among all cities that received an intentional nuclear attack, Hiroshima is
+-- the only one that also holds an AI governance anchor.
+theorem hiroshima_conditioned_unique :
+    forall x : City,
+      IntentionalNuclearAttack x /\ AIGovernanceAnchor x ->
+      x = City.Hiroshima := by
+  intro x h
+  cases h with
+  | intro h_nuclear h_anchor =>
+      cases nuclear_cities_exhaustive x h_nuclear with
+      | inl h_hiroshima =>
+          exact h_hiroshima
+      | inr h_nagasaki =>
+          rw [h_nagasaki] at h_anchor
+          exact False.elim (no_anchor_nagasaki h_anchor)
+
+/-!
 ## External Historical Axioms
 
 These three predicates and the witness axiom cannot be proved by category
