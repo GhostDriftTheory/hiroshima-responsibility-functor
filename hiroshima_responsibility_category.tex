@@ -76,6 +76,38 @@ This is a structural uniqueness claim about the conjunction of these three
 conditions.  It is not a moral exclusion of other cities with histories of war
 or technological harm.
 
+\section*{Civilizational Layer and Conditioned Uniqueness}
+
+The Lean file introduces a structure \texttt{CivilizationalThreat} with three
+fields: capacity to convert humans into optimization objects, capacity for
+irreversible civilizational-scale harm, and capacity to bypass responsibility
+conditions.  It then proves
+\[
+\texttt{nuclear\_ai\_same\_civilizational\_structure},
+\]
+namely that nuclear weapons and AI share this formal three-part structure in
+the model.  This is not a claim of moral equivalence and does not claim that AI
+harm is inevitable.
+
+The Lean file also proves a conditioned uniqueness theorem:
+\[
+\texttt{hiroshima\_conditioned\_unique}.
+\]
+The theorem states that any city satisfying both conditions
+\[
+\text{IntentionalNuclearAttack}(x)
+\quad\text{and}\quad
+\text{AIGovernanceAnchor}(x)
+\]
+is equal to Hiroshima.  This is proved from explicit historical axioms:
+Hiroshima and Nagasaki received intentional nuclear attacks, only those cities
+satisfy that condition, Hiroshima has an AI governance anchor, and Nagasaki
+does not have the corresponding anchor in this model.
+
+The theorem does not prove that AI governance requires Hiroshima, nor that
+Hiroshima is necessary for global adoption.  It proves only the conditioned
+uniqueness claim stated above.
+
 \section*{Definitions}
 
 \begin{definition}[Ordinary corporate decision category]
@@ -307,7 +339,12 @@ admissible responsible morphism under $\mathrm{Adm}_{B,V}$.
   $\neg\mathrm{Adm}_{B,V}$ witness, (ii) institutional preservation as world
   memory, and (iii) existing AI governance anchor through the Hiroshima AI
   Process.
+  \item Claimed as a Lean theorem: under the predicates
+  \texttt{IntentionalNuclearAttack} and \texttt{AIGovernanceAnchor},
+  Hiroshima is the unique city satisfying both.
   \item Not claimed: Hiroshima uniquely guarantees ethical action.
+  \item Not claimed: AI governance requires Hiroshima as an anchor, or that
+  Hiroshima is necessary for global adoption.
   \item Not claimed: other cities with war histories are excluded on moral
   grounds.  They are excluded from this specific role only if they lack the
   conjunction required above.
