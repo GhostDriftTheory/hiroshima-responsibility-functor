@@ -27,6 +27,9 @@ Hiroshima Responsibility Functor.
   - Proves universal exclusion:
     - any path not passing `B` is not admissible;
     - any path not passing `V` is not admissible.
+  - Defines `CivilizationalThreat` and proves
+    `nuclear_ai_same_civilizational_structure`.
+  - Proves `hiroshima_conditioned_unique` from explicit historical premises.
   - Records Hiroshima's historical status as an explicit external axiom, not as
     a theorem proved by category theory.
 
@@ -161,6 +164,46 @@ axiom hiroshima_historical_witness :
 This is intentional. Category theory does not prove historical facts. It only
 formalizes how those facts function once admitted as premises.
 
+## Conditioned Uniqueness
+
+The Lean file proves the following theorem:
+
+```lean
+hiroshima_conditioned_unique :
+  for any city x,
+  if x received an intentional nuclear attack
+  and x holds an AI governance anchor,
+  then x = Hiroshima.
+```
+
+This is a theorem, not an axiom. It is proved by case analysis from explicit
+historical axioms:
+
+- Hiroshima received an intentional nuclear attack.
+- Nagasaki received an intentional nuclear attack.
+- Hiroshima holds an internationally recognized AI governance anchor.
+- Nagasaki does not hold an equivalent AI governance anchor in this model.
+- Intentional nuclear attacks occurred only at Hiroshima and Nagasaki.
+
+The two conditions are not arbitrary inside this model. They identify a city
+that has both:
+
+1. Institutional experience of the structural problem: intentional conversion
+   of humans into calculation objects at civilizational scale.
+2. Existing international recognition as an AI governance reference point.
+
+The file also proves:
+
+```lean
+nuclear_ai_same_civilizational_structure
+```
+
+This theorem says that nuclear weapons and AI share the same three-part
+structural description under `CivilizationalThreat`. This is the formal content
+of the claim that they are "in the same layer." It does not claim moral
+equivalence, inevitable AI harm, or that Hiroshima is necessary for global AI
+governance adoption.
+
 ## Sources
 
 - UNESCO, Hiroshima Peace Memorial / Genbaku Dome:
@@ -188,3 +231,4 @@ pdflatex hiroshima_responsibility_category.tex
 
 Note: this workspace did not have a TeX compiler installed during verification,
 so only the Lean file was machine-checked here.
+
