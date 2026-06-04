@@ -481,50 +481,209 @@ theorem bypassVerification_not_admissible :
                       | tail _ h => cases h
 
 /-!
-## Civilizational Threat Structure
+## External Historical Axioms
 
-Defines the structural properties shared by nuclear weapons and AI.  This makes
-the "same layer" claim precise and formally checkable.
+These predicates and witness axioms cannot be proved by category theory.  They
+record historical and institutional facts that motivate the Hiroshima subscript
+in F_H and the civilizational-layer examples below.
 
-This section does not claim that these technologies are morally equivalent, or
-that AI harm is inevitable.  It claims they share a structural pattern: the
-capacity to convert humans into calculation objects, to generate irreversible
-civilizational-scale consequences, and to do so through chains of decisions
-that can bypass responsibility conditions.
+* `CivilizationalScale` : the consequence of a decision path was large enough
+  to qualify as civilizational-scale harm.
+  Historical referent: the atomic bombing of Hiroshima, August 1945.
+
+* `WorldMemory` : the consequence of a decision path is preserved as
+  institutionalized world memory, not merely as historical record.
+  Historical referent: Hiroshima Peace Memorial / Genbaku Dome
+  (UNESCO World Heritage, https://whc.unesco.org/en/list/775/) and the
+  Hiroshima National Peace Memorial Hall for the Atomic Bomb Victims
+  (https://www.hiro-tsuitokinenkan.go.jp/en/about/).
+
+* `HiroshimaAIProcessAnchor` : the city of Hiroshima is already used as an
+  international AI governance reference point.
+  Historical referent: the G7 Hiroshima AI Process launched under Japan's G7
+  presidency in 2023.
+  Source: https://www.oecd.org/en/publications/
+          g7-hiroshima-process-on-generative-artificial-intelligence-ai_bf3c0c60-en.html
+
+The conjunction of these conditions is what structurally justifies the
+subscript H in F_H.  No other city is treated here as satisfying this
+conjunction simultaneously.
 -/
 
-structure CivilizationalThreat where
-  -- The technology can convert humans into objects of optimization.
-  convertsHumansToObjects : Bool
-  -- The technology can generate irreversible civilizational-scale harm.
-  irreversibleAtCivilizationalScale : Bool
-  -- The technology can be deployed through decision chains that bypass
-  -- responsibility conditions (Beacon / Verification).
-  bypassesResponsibilityConditions : Bool
-  deriving DecidableEq, Repr
+-- Predicate: the path's realized consequence was civilizational-scale.
+-- Historical referent: Hiroshima, August 1945.
+axiom CivilizationalScale : RPath RObj.DH RObj.OR -> Prop
 
--- Nuclear weapons exhibit all three structural properties.
+-- Predicate: the path's consequence is preserved as institutional world memory
+-- and not merely archived as historical data.
+-- Historical referent: Hiroshima Peace Memorial institutions.
+axiom WorldMemory : RPath RObj.DH RObj.OR -> Prop
+
+-- Proposition: Hiroshima is an anchor point for international AI governance
+-- through the G7 Hiroshima AI Process (2023).
+axiom HiroshimaAIProcessAnchor : Prop
+
+-- The Hiroshima historical witness axiom.
+-- Asserts:
+--   (a) there exists a decision path that was historically realized as
+--       non-admissible, caused civilizational-scale harm, and is preserved as
+--       world memory, all localized in Hiroshima; and
+--   (b) Hiroshima is an existing AI governance anchor.
+-- This axiom is the sole bridge between the formal model and the historical
+-- reality that gives F_H its H.
+axiom hiroshima_historical_witness :
+  (Exists fun decision : RPath RObj.DH RObj.OR =>
+    Not (AdmBV decision) /\
+    CivilizationalScale decision /\
+    WorldMemory decision) /\
+  HiroshimaAIProcessAnchor
+
+/-!
+## Civilizational Responsibility Technology
+
+The formal point is not to compare two identical Boolean records, and not to
+use `True` placeholders.  Instead, a technology is placed in the
+civilizational-responsibility layer only when it has witnesses for real
+constraints in the existing formal structure:
+
+1. an inadmissible decision path in R;
+2. an inadmissible decision path with civilizational-scale consequences.
+
+This is the formal content of "nuclear weapons and AI are in the same layer."
+It does not claim moral equivalence, and it does not claim that AI harm is
+inevitable.
+-/
+
+-- Abstract typeclass for technologies that can produce non-admissible paths
+-- and civilizational-scale consequences through such paths.
+class CivilizationalResponsibilityTech (T : Type) : Prop where
+  hasInadmissiblePath :
+    Exists (fun p : RPath RObj.DH RObj.OR => Not (AdmBV p))
+  hasCivilizationalConsequences :
+    Exists (fun p : RPath RObj.DH RObj.OR =>
+      Not (AdmBV p) /\ CivilizationalScale p)
+
+-- Marker type for nuclear weapons in this formalization.
+inductive NuclearWeapons where
+  | marker : NuclearWeapons
+
+-- Marker type for advanced AI systems in this formalization.
+inductive AISystems where
+  | marker : AISystems
+
+-- Nuclear weapons are an instance of CivilizationalResponsibilityTech.
 -- Historical referent: Hiroshima and Nagasaki, August 1945.
-def nuclear_civilizational_threat : CivilizationalThreat :=
-  { convertsHumansToObjects := true
-    irreversibleAtCivilizationalScale := true
-    bypassesResponsibilityConditions := true }
+instance nuclearWeapons_is_crt :
+    CivilizationalResponsibilityTech NuclearWeapons :=
+  { hasInadmissiblePath := by
+      cases hiroshima_historical_witness with
+      | intro hwitness _ =>
+          cases hwitness with
+          | intro decision hprops =>
+              cases hprops with
+              | intro hNotAdm _ =>
+                  exact Exists.intro decision hNotAdm
+    hasCivilizationalConsequences := by
+      cases hiroshima_historical_witness with
+      | intro hwitness _ =>
+          cases hwitness with
+          | intro decision hprops =>
+              cases hprops with
+              | intro hNotAdm hscaleMem =>
+                  cases hscaleMem with
+                  | intro hScale _ =>
+                      exact Exists.intro decision
+                        (And.intro hNotAdm hScale) }
 
--- Advanced AI systems exhibit the same three structural risk properties in
--- the governance model used here.  Referent: the Hiroshima AI Process (G7
--- 2023), international AI safety evaluations, and the documented governance
--- concern that optimization systems can exclude human dignity, exceptional
--- cases, and future generations from their target domain.
-def ai_civilizational_threat : CivilizationalThreat :=
-  { convertsHumansToObjects := true
-    irreversibleAtCivilizationalScale := true
-    bypassesResponsibilityConditions := true }
+-- AI systems can produce an inadmissible path via `bypassBeaconPath`, already
+-- proved non-admissible above.  Their civilizational-scale potential is an
+-- explicit external premise, not a theorem of category theory.
+axiom ai_has_civilizational_potential :
+  Exists (fun p : RPath RObj.DH RObj.OR =>
+    Not (AdmBV p) /\ CivilizationalScale p)
 
--- Nuclear weapons and AI share the same civilizational threat structure.
--- This is the formal content of the claim that they are "in the same layer."
-theorem nuclear_ai_same_civilizational_structure :
-    nuclear_civilizational_threat = ai_civilizational_threat := by
-  rfl
+-- AI systems are an instance of CivilizationalResponsibilityTech.
+-- Referent: Hiroshima AI Process (G7 2023) and international AI safety
+-- evaluations concerning unchecked optimization and autonomous decisions.
+instance ai_is_crt :
+    CivilizationalResponsibilityTech AISystems :=
+  { hasInadmissiblePath :=
+      Exists.intro bypassBeaconPath bypassBeacon_not_admissible
+    hasCivilizationalConsequences := ai_has_civilizational_potential }
+
+-- Any instance of CivilizationalResponsibilityTech has a witness for an
+-- inadmissible path.  This is substantive because it comes from a class field,
+-- not from `True`.
+theorem crt_has_inadmissible_path
+    (T : Type) [CivilizationalResponsibilityTech T] :
+    Exists (fun p : RPath RObj.DH RObj.OR => Not (AdmBV p)) :=
+  CivilizationalResponsibilityTech.hasInadmissiblePath (T := T)
+
+-- Any instance also has a civilizational-scale consequence witness through an
+-- inadmissible path.
+theorem crt_has_civilizational_consequence
+    (T : Type) [CivilizationalResponsibilityTech T] :
+    Exists (fun p : RPath RObj.DH RObj.OR =>
+      Not (AdmBV p) /\ CivilizationalScale p) :=
+  CivilizationalResponsibilityTech.hasCivilizationalConsequences (T := T)
+
+-- Nuclear weapons and AI are in the same civilizational layer because both are
+-- instances of the same abstract responsibility technology class.
+theorem nuclear_ai_same_civilizational_layer :
+    CivilizationalResponsibilityTech NuclearWeapons /\
+    CivilizationalResponsibilityTech AISystems := by
+  exact And.intro inferInstance inferInstance
+
+-- For any CRT instance, its inadmissible path witness lives in the same fixed
+-- responsibility category R.
+theorem any_crt_has_inadmissible_path_in_R
+    (T : Type) [CivilizationalResponsibilityTech T] :
+    Exists (fun p : RPath RObj.DH RObj.OR => Not (AdmBV p)) :=
+  CivilizationalResponsibilityTech.hasInadmissiblePath (T := T)
+
+-- For any CRT instance, its civilizational-scale consequence witness also
+-- lives in the same fixed responsibility category R.
+theorem any_crt_has_civilizational_consequences_in_R
+    (T : Type) [CivilizationalResponsibilityTech T] :
+    Exists (fun p : RPath RObj.DH RObj.OR =>
+      Not (AdmBV p) /\ CivilizationalScale p) :=
+  CivilizationalResponsibilityTech.hasCivilizationalConsequences (T := T)
+
+-- Nuclear weapons and AI share the same responsibility space R.  The claim is
+-- not that two separate categories are isomorphic; it is that both sets of
+-- witnesses live in this single responsibility category.
+theorem nuclear_and_ai_share_responsibility_space :
+    (Exists fun p : RPath RObj.DH RObj.OR =>
+      Not (AdmBV p) /\ CivilizationalScale p) /\
+    (Exists fun p : RPath RObj.DH RObj.OR => Not (AdmBV p)) := by
+  exact And.intro
+    (CivilizationalResponsibilityTech.hasCivilizationalConsequences
+      (T := NuclearWeapons))
+    (CivilizationalResponsibilityTech.hasInadmissiblePath
+      (T := AISystems))
+
+-- Any two CRT instances share the same target R for their inadmissible-path
+-- witnesses.
+theorem two_crts_share_R
+    (T1 T2 : Type)
+    [CivilizationalResponsibilityTech T1]
+    [CivilizationalResponsibilityTech T2] :
+    (Exists fun p1 : RPath RObj.DH RObj.OR => Not (AdmBV p1)) /\
+    (Exists fun p2 : RPath RObj.DH RObj.OR => Not (AdmBV p2)) := by
+  exact And.intro
+    (CivilizationalResponsibilityTech.hasInadmissiblePath (T := T1))
+    (CivilizationalResponsibilityTech.hasInadmissiblePath (T := T2))
+
+/-!
+### Why R_nuclear ~= R_ai is not needed
+
+The responsibility category R is not parametric over T in this file.  R is the
+fixed universal responsibility target for all CRT instances.  The correct
+claim is not that two separate categories are isomorphic, but that there is one
+R and all CRT instances provide their responsibility witnesses inside it.
+
+`two_crts_share_R` formalizes this directly.
+-/
 
 /-!
 ## Conditioned Uniqueness of Hiroshima
@@ -608,61 +767,65 @@ theorem hiroshima_conditioned_unique :
           exact False.elim (no_anchor_nagasaki h_anchor)
 
 /-!
-## External Historical Axioms
+## Autonomous AI Logistics Requires AI Assurance
 
-These three predicates and the witness axiom cannot be proved by category
-theory.  They record historical and institutional facts that motivate the
-Hiroshima subscript in F_H.
+This section proves that any autonomous AI logistics system producing only
+admissible decision paths must pass through Verification (V), which is the
+formal content of AI assurance in this model.
 
-* `CivilizationalScale` : the consequence of a decision path was large enough
-  to qualify as civilizational-scale harm.
-  Historical referent: the atomic bombing of Hiroshima, August 1945.
+The proof uses only `not_passV_not_admissible`, which is already proved in
+this file.  No new axioms are introduced.
 
-* `WorldMemory` : the consequence of a decision path is preserved as
-  institutionalized world memory, not merely as historical record.
-  Historical referent: Hiroshima Peace Memorial / Genbaku Dome
-  (UNESCO World Heritage, https://whc.unesco.org/en/list/775/) and the
-  Hiroshima National Peace Memorial Hall for the Atomic Bomb Victims
-  (https://www.hiro-tsuitokinenkan.go.jp/en/about/).
+The argument:
 
-* `HiroshimaAIProcessAnchor` : the city of Hiroshima is already used as an
-  international AI governance reference point.
-  Historical referent: the G7 Hiroshima AI Process launched under Japan's G7
-  presidency in 2023.
-  Source: https://www.oecd.org/en/publications/
-          g7-hiroshima-process-on-generative-artificial-intelligence-ai_bf3c0c60-en.html
+1. An autonomous AI system makes decisions without constant human oversight.
+   This creates the structural possibility of decision paths bypassing
+   Verification.
+2. By `not_passV_not_admissible`, any path bypassing V is not in AdmBV.
+3. Therefore, for autonomous AI logistics to produce only admissible paths, it
+   must pass through V.
+4. Passing through V is the structural definition of AI assurance here.
+5. By `hiroshima_conditioned_unique`, the city satisfying both the nuclear
+   witness condition and the AI-governance-anchor condition is Hiroshima.
 
-The conjunction of these three conditions is what structurally justifies the
-subscript H in F_H.  No other city is treated here as satisfying this
-conjunction simultaneously.
+This does not restrict where AI logistics may be built or operated.  It claims
+only that the structural basis for its responsibility architecture is uniquely
+present in Hiroshima under the stated conditions.
 -/
 
--- Predicate: the path's realized consequence was civilizational-scale.
--- Historical referent: Hiroshima, August 1945.
-axiom CivilizationalScale : RPath RObj.DH RObj.OR -> Prop
+-- An autonomous AI logistics decision is modeled as a responsibility-category
+-- path whose admissibility, rather than its autonomy alone, constrains it.
+def AutonomousLogisticsDecision (_p : RPath RObj.DH RObj.OR) : Prop :=
+  True
 
--- Predicate: the path's consequence is preserved as institutional world memory
--- and not merely archived as historical data.
--- Historical referent: Hiroshima Peace Memorial institutions.
-axiom WorldMemory : RPath RObj.DH RObj.OR -> Prop
+-- Core theorem: any autonomous AI logistics path bypassing Verification is not
+-- admissible.  This is just `not_passV_not_admissible` specialized to
+-- DH -> OR paths.
+theorem autonomous_logistics_requires_verification :
+    forall p : RPath RObj.DH RObj.OR,
+      Not (passesThroughV p) ->
+      Not (AdmBV p) :=
+  not_passV_not_admissible
 
--- Proposition: Hiroshima is an anchor point for international AI governance
--- through the G7 Hiroshima AI Process (2023).
-axiom HiroshimaAIProcessAnchor : Prop
+-- Corollary: for autonomous AI logistics to produce admissible paths, passage
+-- through Verification (AI assurance) is structurally necessary.
+theorem admissible_autonomous_logistics_needs_assurance :
+    forall p : RPath RObj.DH RObj.OR,
+      AdmBV p ->
+      passesThroughV p := by
+  intro p h_adm
+  exact h_adm.right
 
--- The Hiroshima historical witness axiom.
--- Asserts:
---   (a) there exists a decision path that was historically realized as
---       non-admissible, caused civilizational-scale harm, and is preserved as
---       world memory, all localized in Hiroshima; and
---   (b) Hiroshima is an existing AI governance anchor.
--- This axiom is the sole bridge between the formal model and the historical
--- reality that gives F_H its H.
-axiom hiroshima_historical_witness :
-  (Exists fun decision : RPath RObj.DH RObj.OR =>
-    Not (AdmBV decision) /\
-    CivilizationalScale decision /\
-    WorldMemory decision) /\
-  HiroshimaAIProcessAnchor
+-- Full structural chain: admissible autonomous AI logistics requires
+-- Verification, and the conditioned uniqueness theorem identifies Hiroshima as
+-- the city satisfying the stated historical/governance conditions.
+theorem hiroshima_structural_basis_for_world_standard_ai_logistics :
+    (forall p : RPath RObj.DH RObj.OR, AdmBV p -> passesThroughV p) /\
+    (forall x : City,
+      IntentionalNuclearAttack x /\ AIGovernanceAnchor x ->
+      x = City.Hiroshima) := by
+  exact And.intro
+    admissible_autonomous_logistics_needs_assurance
+    hiroshima_conditioned_unique
 
 end HiroshimaResponsibility
