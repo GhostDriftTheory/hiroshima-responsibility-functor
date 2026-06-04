@@ -2,9 +2,7 @@
 
 ![Lean CI](https://github.com/GhostDriftTheory/hiroshima-responsibility-functor/actions/workflows/lean.yml/badge.svg)
 
-![Hiroshima Responsibility Functor](./Hiroshima%20Responsibility%20Functor.png)
-
-**Hiroshima Responsibility Functor** formalizes how ordinary corporate decision-making can be mapped into a responsibility-preserving path that passes through Beacon admissibility and ADIC-style verification.
+*All theorems machine-checked. Historical premises are explicit axioms.*
 
 This bundle contains a category-theoretic and Lean-formalized sketch of the
 Hiroshima Responsibility Functor.
@@ -27,8 +25,12 @@ Hiroshima Responsibility Functor.
   - Proves universal exclusion:
     - any path not passing `B` is not admissible;
     - any path not passing `V` is not admissible.
-  - Defines `CivilizationalThreat` and proves
-    `nuclear_ai_same_civilizational_structure`.
+  - Defines `CivilizationalResponsibilityTech` as an abstract typeclass with
+    real witness constraints.
+  - Instantiates nuclear weapons and AI as members of that typeclass.
+  - Proves `nuclear_ai_same_civilizational_layer`.
+  - Proves `two_crts_share_R`, showing that any two CRT instances provide
+    inadmissible-path witnesses in the same responsibility category `R`.
   - Proves `hiroshima_conditioned_unique` from explicit historical premises.
   - Records Hiroshima's historical status as an explicit external axiom, not as
     a theorem proved by category theory.
@@ -195,14 +197,65 @@ that has both:
 The file also proves:
 
 ```lean
-nuclear_ai_same_civilizational_structure
+nuclear_ai_same_civilizational_layer
 ```
 
-This theorem says that nuclear weapons and AI share the same three-part
-structural description under `CivilizationalThreat`. This is the formal content
-of the claim that they are "in the same layer." It does not claim moral
-equivalence, inevitable AI harm, or that Hiroshima is necessary for global AI
-governance adoption.
+`CivilizationalResponsibilityTech` is an abstract typeclass with two real
+constraints:
+
+1. The technology must have a witness for an inadmissible decision path.
+2. The technology must have a witness for civilizational-scale consequences
+   through such a path.
+
+Nuclear weapons satisfy both constraints via `hiroshima_historical_witness`.
+AI systems satisfy the inadmissible-path constraint via the existing
+`bypassBeaconPath` proof and the civilizational-scale constraint via the
+explicit axiom `ai_has_civilizational_potential`, documented in the Lean file.
+`nuclear_ai_same_civilizational_layer` proves both are members of the same
+abstract type with real, non-trivial constraints.
+
+The file also proves `two_crts_share_R`: for any two instances of
+`CivilizationalResponsibilityTech`, both provide inadmissible-path witnesses in
+the same responsibility category `R`. This is the universal responsibility
+structure. The responsibility category `R` is not parametric over the specific
+technology; it is the fixed target into which any CRT instance maps. The full
+isomorphism `R_nuclear ~= R_ai` is therefore not required: universality is
+expressed by the shared target `R` itself.
+
+This does not claim moral equivalence, inevitable AI harm, or that Hiroshima is
+necessary for global AI governance adoption.
+
+## Autonomous AI Logistics Requires AI Assurance
+
+The Lean file proves the following chain without new axioms:
+
+**Step 1** (`autonomous_logistics_requires_verification`):
+
+Any autonomous AI logistics path bypassing Verification is not admissible. This
+follows directly from `not_passV_not_admissible`.
+
+**Step 2** (`admissible_autonomous_logistics_needs_assurance`):
+
+For autonomous AI logistics to produce admissible paths, passage through
+Verification (AI assurance) is structurally necessary.
+
+**Step 3** (`hiroshima_structural_basis_for_world_standard_ai_logistics`):
+
+The structural basis for AI assurance is uniquely grounded in Hiroshima by
+`hiroshima_conditioned_unique`.
+
+**Conclusion:**
+
+World-standard autonomous AI logistics, which requires AI assurance, has a
+structural justification for originating from Hiroshima.
+
+This does not claim that logistics systems cannot be built or operated
+elsewhere. It claims that the responsibility architecture and assurance anchor
+for a world-standard autonomous AI logistics system are structurally justified
+from Hiroshima, not from an arbitrary city.
+
+No new axioms are introduced in this section. The chain follows from previously
+proved theorems.
 
 ## Sources
 
@@ -231,4 +284,3 @@ pdflatex hiroshima_responsibility_category.tex
 
 Note: this workspace did not have a TeX compiler installed during verification,
 so only the Lean file was machine-checked here.
-
