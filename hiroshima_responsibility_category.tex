@@ -78,16 +78,28 @@ or technological harm.
 
 \section*{Civilizational Layer and Conditioned Uniqueness}
 
-The Lean file introduces a structure \texttt{CivilizationalThreat} with three
-fields: capacity to convert humans into optimization objects, capacity for
-irreversible civilizational-scale harm, and capacity to bypass responsibility
-conditions.  It then proves
+The Lean file introduces an abstract typeclass
+\texttt{CivilizationalResponsibilityTech}.  A technology belongs to this class
+when it has real witnesses for two constraints: an inadmissible path in the
+responsibility category $R$, and civilizational-scale consequences through such
+a path.  Nuclear weapons satisfy these constraints via
+\texttt{hiroshima\_historical\_witness}.  AI systems satisfy the inadmissible
+path constraint via \texttt{bypassBeaconPath} and the civilizational-scale
+constraint via the explicit axiom
+\texttt{ai\_has\_civilizational\_potential}.  The Lean theorem
 \[
-\texttt{nuclear\_ai\_same\_civilizational\_structure},
+\texttt{nuclear\_ai\_same\_civilizational\_layer}
 \]
-namely that nuclear weapons and AI share this formal three-part structure in
-the model.  This is not a claim of moral equivalence and does not claim that AI
-harm is inevitable.
+therefore formalizes "same layer" as shared membership in an abstract class
+with non-trivial witnesses, not as equality of identical Boolean records.
+
+The Lean file also proves \texttt{two\_crts\_share\_R}: any two instances of
+\texttt{CivilizationalResponsibilityTech} provide inadmissible-path witnesses
+in the same responsibility category $R$.  Thus the relevant universality claim
+is not that two separate categories \texttt{R\_nuclear} and \texttt{R\_ai} are
+isomorphic.  The stronger and simpler claim is that $R$ is the fixed
+responsibility target shared by all CRT instances.  This is not a claim of
+moral equivalence and does not claim that AI harm is inevitable.
 
 The Lean file also proves a conditioned uniqueness theorem:
 \[
@@ -107,6 +119,26 @@ does not have the corresponding anchor in this model.
 The theorem does not prove that AI governance requires Hiroshima, nor that
 Hiroshima is necessary for global adoption.  It proves only the conditioned
 uniqueness claim stated above.
+
+\section*{Autonomous AI Logistics}
+
+The Lean file also proves an autonomous AI logistics chain.  First,
+\texttt{autonomous\_logistics\_requires\_verification} specializes the already
+proved theorem \texttt{not\_passV\_not\_admissible}: any logistics decision path
+that bypasses Verification $V$ is not admissible under $\mathrm{Adm}_{B,V}$.
+
+Second, \texttt{admissible\_autonomous\_logistics\_needs\_assurance} proves that
+any admissible autonomous AI logistics path must pass through Verification.
+This is the formal role of AI assurance in the model.
+
+Third,
+\texttt{hiroshima\_structural\_basis\_for\_world\_standard\_ai\_logistics}
+combines that assurance requirement with
+\texttt{hiroshima\_conditioned\_unique}.  The conclusion is not that logistics
+systems cannot be built or operated elsewhere.  The conclusion is that the
+responsibility architecture and assurance anchor for a world-standard
+autonomous AI logistics system are structurally justified from Hiroshima rather
+than from an arbitrary city.
 
 \section*{Definitions}
 
@@ -345,6 +377,9 @@ admissible responsible morphism under $\mathrm{Adm}_{B,V}$.
   \item Not claimed: Hiroshima uniquely guarantees ethical action.
   \item Not claimed: AI governance requires Hiroshima as an anchor, or that
   Hiroshima is necessary for global adoption.
+  \item Not claimed: autonomous AI logistics systems cannot be physically built
+  or operated outside Hiroshima.  The claim concerns the structural origin of
+  the responsibility architecture and assurance anchor.
   \item Not claimed: other cities with war histories are excluded on moral
   grounds.  They are excluded from this specific role only if they lack the
   conjunction required above.
