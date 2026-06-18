@@ -225,7 +225,9 @@ expressed by the shared target `R` itself.
 This does not claim moral equivalence, inevitable AI harm, or that Hiroshima is
 necessary for global AI governance adoption.
 
-## Autonomous AI Logistics Requires AI Assurance
+## Application Example: Autonomous AI Logistics Requires AI Assurance
+
+This section is an application example. The Hiroshima Responsibility Functor is not limited to logistics; it applies to corporate, institutional, and AI-mediated decisions in general.
 
 The Lean file proves the following chain without new axioms:
 
